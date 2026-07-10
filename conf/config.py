@@ -54,10 +54,10 @@ CKPT_PATH_TITLE = f"{OPS_BASE}/checkpoints/title"
 # ============================================================
 # Snapshot dates & SCD2 conventions
 # ============================================================
-SNAP_V1 = "2026-01-01"        # January catalog snapshot
-SNAP_V2 = "2026-06-15"        # June catalog snapshot (SCD2 changes take effect)
+SNAP_V1 = "2026-01-01" # January catalog snapshot
+SNAP_V2 = "2026-06-15" # June catalog snapshot (SCD2 changes take effect)
 
-HIGH_DATE = "9999-12-31"      # open-ended valid_to for current SCD2 versions
+HIGH_DATE = "9999-12-31" # open-ended valid_to for current SCD2 versions
 
 # ============================================================
 # Data-generation parameters (dev defaults; scale up for optimization phase)
@@ -70,6 +70,12 @@ GEN_PARTITIONS = 8 # generation parallelism (raise for big runs)
 SEED = 42 # reproducibility
 EVENTS_START_DATE = "2026-01-01"
 
+# ---- Day-2 knobs ----
+DAY2_NEW_ROWS = 500_000  # fresh events for the next day
+DAY2_DUPE_FRAC = 0.02 # ~2% of existing events replayed as duplicates
+DAY2_OFFSET = NUM_DAYS  # next day after the original 30-day span
+EVENT_ID_OFFSET = NUM_ROWS + 1 # disjoint event_id range so NEW ids never collide
+
 # Genre pool for synthetic catalog attributes
 GENRE_POOL = [
     "Sci-Fi", "Drama", "Horror", "Comedy", "Action",
@@ -79,5 +85,7 @@ GENRE_POOL = [
 # ============================================================
 # Business-logic constants
 # ============================================================
-GAP_SECONDS = 30 * 60   # session boundary: gap > 30 min starts a new session
-HEARTBEAT_INTERVAL_SEC = 10        # generator emits a heartbeat ~every 10s (watch-time basis)
+# cap to identify statefull sessions
+MAX_SESSION_HOURS = 24
+GAP_SECONDS = 30 * 60 # session boundary: gap > 30 min starts a new session
+HEARTBEAT_INTERVAL_SEC = 10  # generator emits a heartbeat ~every 10s (watch-time basis)
