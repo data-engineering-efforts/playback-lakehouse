@@ -1,0 +1,153 @@
+resources:
+  jobs:
+    playback_lakehouse_pipeline:
+      name: playback_lakehouse_pipeline
+      tasks:
+        - task_key: bronze_dim_title
+          notebook_task:
+            notebook_path: /Workspace/Users/dabahian.a1@gmail.com/playback-lakehouse/notebooks/11_bronze_dim_title.py
+            source: WORKSPACE
+          max_retries: 1
+          min_retry_interval_millis: 0
+          disable_auto_optimization: false
+          email_notifications:
+            on_start:
+              - safehouse2017@gmail.com
+            on_success:
+              - safehouse2017@gmail.com
+            on_failure:
+              - safehouse2017@gmail.com
+        - task_key: bronze_heartbeats
+          notebook_task:
+            notebook_path: /Workspace/Users/dabahian.a1@gmail.com/playback-lakehouse/notebooks/10_bronze_heartbeats.py
+            source: WORKSPACE
+          max_retries: 1
+          min_retry_interval_millis: 0
+          disable_auto_optimization: false
+          email_notifications:
+            on_start:
+              - safehouse2017@gmail.com
+            on_success:
+              - safehouse2017@gmail.com
+            on_failure:
+              - safehouse2017@gmail.com
+        - task_key: silver_dim_title
+          depends_on:
+            - task_key: bronze_dim_title
+          notebook_task:
+            notebook_path: /Workspace/Users/dabahian.a1@gmail.com/playback-lakehouse/notebooks/22_silver_dim_title.py
+            source: WORKSPACE
+          max_retries: 1
+          min_retry_interval_millis: 0
+          disable_auto_optimization: false
+          email_notifications:
+            on_start:
+              - safehouse2017@gmail.com
+            on_success:
+              - safehouse2017@gmail.com
+            on_failure:
+              - safehouse2017@gmail.com
+        - task_key: gold_dim_title
+          depends_on:
+            - task_key: silver_dim_title
+          notebook_task:
+            notebook_path: /Workspace/Users/dabahian.a1@gmail.com/playback-lakehouse/notebooks/30_gold_dim_title.py
+            source: WORKSPACE
+          max_retries: 1
+          min_retry_interval_millis: 0
+          disable_auto_optimization: false
+          email_notifications:
+            on_start:
+              - safehouse2017@gmail.com
+            on_success:
+              - safehouse2017@gmail.com
+            on_failure:
+              - safehouse2017@gmail.com
+        - task_key: silver_events
+          depends_on:
+            - task_key: bronze_heartbeats
+          notebook_task:
+            notebook_path: /Workspace/Users/dabahian.a1@gmail.com/playback-lakehouse/notebooks/20_silver_events.py
+            source: WORKSPACE
+          max_retries: 1
+          min_retry_interval_millis: 0
+          disable_auto_optimization: false
+          email_notifications:
+            on_start:
+              - safehouse2017@gmail.com
+            on_success:
+              - safehouse2017@gmail.com
+            on_failure:
+              - safehouse2017@gmail.com
+        - task_key: gold_fct_events
+          depends_on:
+            - task_key: silver_events
+          notebook_task:
+            notebook_path: /Workspace/Users/dabahian.a1@gmail.com/playback-lakehouse/notebooks/32_gold_fct_events.py
+            source: WORKSPACE
+          max_retries: 1
+          min_retry_interval_millis: 0
+          disable_auto_optimization: false
+          email_notifications:
+            on_start:
+              - safehouse2017@gmail.com
+            on_success:
+              - safehouse2017@gmail.com
+            on_failure:
+              - safehouse2017@gmail.com
+        - task_key: silver_sessions
+          depends_on:
+            - task_key: silver_events
+          notebook_task:
+            notebook_path: /Workspace/Users/dabahian.a1@gmail.com/playback-lakehouse/notebooks/21_silver_sessions.py
+            source: WORKSPACE
+          max_retries: 1
+          min_retry_interval_millis: 0
+          disable_auto_optimization: false
+          email_notifications:
+            on_start:
+              - safehouse2017@gmail.com
+            on_success:
+              - safehouse2017@gmail.com
+            on_failure:
+              - safehouse2017@gmail.com
+        - task_key: gold_fct_sessions
+          depends_on:
+            - task_key: gold_dim_title
+            - task_key: silver_sessions
+          notebook_task:
+            notebook_path: /Workspace/Users/dabahian.a1@gmail.com/playback-lakehouse/notebooks/31_gold_fct_sessions.py
+            source: WORKSPACE
+          max_retries: 1
+          min_retry_interval_millis: 0
+          disable_auto_optimization: false
+          email_notifications:
+            on_start:
+              - safehouse2017@gmail.com
+            on_success:
+              - safehouse2017@gmail.com
+            on_failure:
+              - safehouse2017@gmail.com
+        - task_key: gold_marts
+          depends_on:
+            - task_key: gold_fct_events
+            - task_key: gold_fct_sessions
+          notebook_task:
+            notebook_path: /Workspace/Users/dabahian.a1@gmail.com/playback-lakehouse/notebooks/40_gold_marts.py
+            source: WORKSPACE
+          max_retries: 1
+          min_retry_interval_millis: 0
+          disable_auto_optimization: false
+          email_notifications:
+            on_start:
+              - safehouse2017@gmail.com
+            on_success:
+              - safehouse2017@gmail.com
+            on_failure:
+              - safehouse2017@gmail.com
+      queue:
+        enabled: true
+      parameters:
+        - name: processing_date
+          default: 2026-02-01
+      performance_target: STANDARD
